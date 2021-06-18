@@ -35,9 +35,8 @@ const removeContact = async (req, res, next) => {
       return res.status(HttpCode.NOT_FOUND).json({ status: 'Not found' })
     }
     const filteredContacts = parsedContacts.filter(contact => contact.id !== Number(req.params.contactId))
-    console.log(filteredContacts)
     fs.writeFile(contactsPath, JSON.stringify(filteredContacts), 'utf-8')
-    res.status(HttpCode.OK).json({ status: 'success' })
+    res.status(HttpCode.OK).json({ status: 'contact deleted' })
   } catch (err) {
     next(err)
   }
@@ -69,11 +68,13 @@ const updateContact = async (req, res, next) => {
     const { name, email, phone } = req.body
     parsedContacts.forEach(contact => {
       if (!contact.id === Number(req.params.contactId)) {
-        return res.status(HttpCode.BAD_REQUEST).json({ status: 'Bad Request' })
+        return res.status(HttpCode.NOT_FOUND).json({ status: 'Not Found' })
       }
-      if (name) contact.name = name
-      if (email) contact.email = email
-      if (phone) contact.phone = phone
+      if (contact.id === Number(req.params.contactId)) {
+        if (name) contact.name = name
+        if (email) contact.email = email
+        if (phone) contact.phone = phone
+      }
     })
     fs.writeFile(contactsPath, JSON.stringify(parsedContacts), 'utf-8')
     res.status(HttpCode.OK).json({ name, email, phone, status: 'Success' })
