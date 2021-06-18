@@ -56,7 +56,7 @@ const addContact = async (req, res, next) => {
     }
     const newContacts = [...parsedContacts, newContact]
     fs.writeFile(contactsPath, JSON.stringify(newContacts), 'utf-8')
-    res.status(HttpCode.CREATED).json({ status: 'created' })
+    res.status(HttpCode.CREATED).json({ contact: newContact, status: 'created' })
   } catch (err) {
     next(err)
   }
@@ -74,8 +74,9 @@ const updateContact = async (req, res, next) => {
       if (name) contact.name = name
       if (email) contact.email = email
       if (phone) contact.phone = phone
-      res.status(HttpCode.OK).json({ status: 'Success' })
     })
+    fs.writeFile(contactsPath, JSON.stringify(parsedContacts), 'utf-8')
+    res.status(HttpCode.OK).json({ name, email, phone, status: 'Success' })
   } catch (err) {
     next(err)
   }
