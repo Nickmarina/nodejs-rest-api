@@ -1,15 +1,87 @@
-// const fs = require('fs/promises')
-// const contacts = require('./contacts.json')
+const fs = require('fs').promises
+const path = require('path')
+const { HttpCode } = require('../helpers/codes.js')
 
-const listContacts = async () => {}
+const contactsPath = path.join(__dirname, './contacts.json')
 
-const getContactById = async (contactId) => {}
+const listContacts = async (req, res, next) => {
+  try {
+    const contacts = await (fs.readFile(contactsPath, 'utf-8'))
+    res.status(HttpCode.OK).json({ contacts: JSON.parse(contacts), status: 'success' })
+  } catch (err) {
+    next(err)
+  }
+}
 
-const removeContact = async (contactId) => {}
+const getContactById = async (req, res, next) => {
+  try {
+    const contacts = await (fs.readFile(contactsPath, 'utf-8'))
+    const parsedContacts = JSON.parse(contacts)
+    const [contact] = parsedContacts.filter(item => item.id === Number(req.params.contactId))
+    if (!contact) {
+      return res.status(HttpCode.NOT_FOUND).json({ status: 'Not found' })
+    }
+    res.status(HttpCode.OK).json({ contact, status: 'success' })
+  } catch (err) {
+    next(err)
+  }
+}
 
-const addContact = async (body) => {}
+const removeContact = async (req, res, next) => {
+  try {
+    const contacts = await (fs.readFile(contactsPath, 'utf-8'))
+    const parsedContacts = JSON.parse(contacts)
+    if (!parsedContacts.find(item => item.id === Number(req.params.contactId))) {
+      return res.status(HttpCode.NOT_FOUND).json({ status: 'Not found' })
+    }
+    const filteredContacts = parsedContacts.filter(contact => contact.id !== Number(req.params.contactId))
+    fs.writeFile(contactsPath, JSON.stringify(filteredContacts), 'utf-8')
+    res.status(HttpCode.OK).json({ status: 'contact deleted' })
+  } catch (err) {
+    next(err)
+  }
+}
 
-const updateContact = async (contactId, body) => {}
+const addContact = async (req, res, next) => {
+  try {
+    const contacts = await (fs.readFile(contactsPath, 'utf-8'))
+    const parsedContacts = JSON.parse(contacts)
+    const { name, email, phone } = req.body
+    const newContact = {
+      id: Date.now(),
+      name,
+      email,
+      phone
+    }
+    const newContacts = [...parsedContacts, newContact]
+    fs.writeFile(contactsPath, JSON.stringify(newContacts), 'utf-8')
+    res.status(HttpCode.CREATED).json({ contact: newContact, status: 'created' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const updateContact = async (req, res, next) => {
+  try {
+    const contacts = await (fs.readFile(contactsPath, 'utf-8'))
+    const parsedContacts = JSON.parse(contacts)
+    const { name, email, phone } = req.body
+    parsedContacts.forEach(contact => {
+      if (!contact.id === Number(req.params.contactId)) {
+        return res.status(HttpCode.NOT_FOUND).json({ status: 'Not Found' })
+      }
+      if (contact.id === Number(req.params.contactId)) {
+        if (name) contact.name = name
+        if (email) contact.email = email
+        if (phone) contact.phone = phone
+      }
+    })
+    fs.writeFile(contactsPath, JSON.stringify(parsedContacts), 'utf-8')
+    res.status(HttpCode.OK).json({ name, email, phone, status: 'Success' })
+  } catch (err) {
+    next(err)
+  }
+}
 
 module.exports = {
   listContacts,
