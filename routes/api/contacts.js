@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const { asyncWrapper } = require('../../helpers/apiHelper')
 const {
   listContactsController,
   getContactByIdController,
@@ -9,10 +10,10 @@ const {
 } = require('../../controllers/contactsController')
 const { validateCreateContact, validateUpdateContact } = require('../../validation/contacts.js')
 
-router.get('/', listContactsController)
-router.get('/:contactId', getContactByIdController)
-router.post('/', validateCreateContact, addContactController)
-router.delete('/:contactId', removeContactController)
-router.patch('/:contactId', validateUpdateContact, updateContactController)
+router.get('/', asyncWrapper(listContactsController))
+router.get('/:contactId', asyncWrapper(getContactByIdController))
+router.post('/', validateCreateContact, asyncWrapper(addContactController))
+router.delete('/:contactId', asyncWrapper(removeContactController))
+router.patch('/:contactId', validateUpdateContact, asyncWrapper(updateContactController))
 
 module.exports = router
