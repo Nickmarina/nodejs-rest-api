@@ -5,14 +5,14 @@ const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
   email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
   phone: Joi.string().min(8).max(15).pattern(/^[0-9]+$/, 'numbers').required(),
-  favorite: Joi.boolean()
-
+  favorite: Joi.boolean().optional()
 })
 
 const schemaUpdateContact = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).optional(),
   email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
   phone: Joi.string().min(8).max(15).pattern(/^[0-9]+$/, 'numbers').optional(),
+  favorite: Joi.boolean().optional()
 }).min(1)
 
 const validate = (shema, body, next) => {
