@@ -15,6 +15,10 @@ const schemaUpdateContact = Joi.object({
   favorite: Joi.boolean().optional()
 }).min(1)
 
+const schemaUpdateStatus = Joi.object({
+  favorite: Joi.boolean().required()
+})
+
 const validate = (shema, body, next) => {
   const { error } = shema.validate(body)
   if (error) {
@@ -33,4 +37,8 @@ module.exports.validateCreateContact = (req, res, next) => {
 
 module.exports.validateUpdateContact = (req, res, next) => {
   return validate(schemaUpdateContact, req.body, next)
+}
+
+module.exports.validateUpdateStatus = (req, res, next) => {
+  return validate(schemaUpdateStatus, req.body, next)
 }

@@ -1,7 +1,7 @@
 const { Contact } = require('../db/contactsModel')
 
 const getContacts = async() => {
-  const contacts = await Contact.find({})
+  const contacts = await Contact.find()
   return contacts
 }
 
@@ -20,9 +20,14 @@ const addContact = async(body) => {
   return contact
 }
 
-const updateContact = async({ id, name, email, phone, favorite }) => {
-  const contact = await Contact.findByIdAndUpdate(id, { $set: { name, email, phone, favorite } })
+const updateContact = async(contactId, body) => {
+  const contact = await Contact.findByIdAndUpdate(contactId, { $set: { ...body } }, { new: true })
   return contact
+}
+
+const updateStatusContact = async(contactId, favorite) => {
+  const updatedStatus = await Contact.findByIdAndUpdate(contactId, { $set: { favorite } }, { new: true })
+  return updatedStatus
 }
 
 module.exports = {
@@ -30,5 +35,6 @@ module.exports = {
   getContactById,
   deleteContact,
   addContact,
-  updateContact
+  updateContact,
+  updateStatusContact
 }

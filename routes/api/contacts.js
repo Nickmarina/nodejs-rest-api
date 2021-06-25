@@ -6,14 +6,16 @@ const {
   getContactByIdController,
   removeContactController,
   addContactController,
-  updateContactController
+  updateContactController,
+  updateStatusContactController
 } = require('../../controllers/contactsController')
-const { validateCreateContact, validateUpdateContact } = require('../../validation/contacts.js')
+const { validateCreateContact, validateUpdateContact, validateUpdateStatus } = require('../../validation/contacts.js')
 
 router.get('/', asyncWrapper(listContactsController))
 router.get('/:contactId', asyncWrapper(getContactByIdController))
 router.post('/', validateCreateContact, asyncWrapper(addContactController))
 router.delete('/:contactId', asyncWrapper(removeContactController))
-router.patch('/:contactId', validateUpdateContact, asyncWrapper(updateContactController))
+router.put('/:contactId', validateUpdateContact, asyncWrapper(updateContactController))
+router.patch('/:contactId/favorite', validateUpdateStatus, asyncWrapper(updateStatusContactController))
 
 module.exports = router
