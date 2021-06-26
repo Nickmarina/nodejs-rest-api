@@ -1,7 +1,20 @@
 const app = require('../app')
+const { connectMongo } = require('../db/connection')
 
-const PORT = process.env.PORT || 8081
+require('dotenv').config()
 
-app.listen(PORT, () => {
-  console.log(`Server running. Use our API on port: ${PORT}`)
-})
+const PORT = process.env.PORT || 8080
+
+const start = async() => {
+  try {
+    await connectMongo()
+
+    app.listen(PORT, () => {
+      console.log(`Server running. Use our API on port: ${PORT}`)
+    })
+  } catch (err) {
+    console.error(`Failed to launch application with error: ${err.message}`)
+  }
+}
+
+start()
