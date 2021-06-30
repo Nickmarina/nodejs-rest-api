@@ -1,12 +1,5 @@
 const { HttpCode } = require('./codes')
 
-class InvalidDataError extends Error {
-  constructor(message) {
-    super(message)
-    this.status = HttpCode.BAD_REQUEST
-  }
-}
-
 class ConflictError extends Error {
   constructor(message) {
     super(message)
@@ -14,7 +7,7 @@ class ConflictError extends Error {
   }
 }
 
-class UnauthorizedError extends Error {
+class UnauthorizedError extends TypeError {
   constructor(message) {
     super(message)
     this.status = HttpCode.UNAUTHORIZED
@@ -22,7 +15,6 @@ class UnauthorizedError extends Error {
 }
 
 module.exports = {
-  InvalidDataError,
   ConflictError,
   UnauthorizedError
 }

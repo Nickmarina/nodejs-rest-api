@@ -1,4 +1,5 @@
 const { HttpCode } = require('../helpers/codes.js')
+
 const {
   getContacts,
   getContactById,
@@ -9,42 +10,48 @@ const {
 } = require('../services/contactService')
 
 const listContactsController = async (req, res, next) => {
-  const contacts = await getContacts()
+  const { _id: userId } = req.user
+  const contacts = await getContacts(userId)
   res.status(HttpCode.OK).json({ contacts, status: 'success' })
 }
 
 const getContactByIdController = async (req, res, next) => {
+  const { _id: userId } = req.user
   const { contactId } = req.params
-  const contact = await getContactById(contactId)
+  const contact = await getContactById(contactId, userId)
   if (!contact) return res.status(HttpCode.BAD_REQUEST).json({ status: 'invalid id' })
   res.status(HttpCode.OK).json({ contact, status: 'success' })
 }
 
 const removeContactController = async (req, res, next) => {
+  const { _id: userId } = req.user
   const { contactId } = req.params
-  const deletedContact = await deleteContact(contactId)
-  if (!deletedContact) return res.status(HttpCode.BAD_REQUEST).json({ status: 'invalid id' })
+  const contact = await deleteContact(contactId, userId)
+  if (!contact) return res.status(HttpCode.BAD_REQUEST).json({ status: 'invalid id' })
   res.status(HttpCode.OK).json({ status: 'contact deleted' })
 }
 
 const addContactController = async (req, res, next) => {
   const body = req.body
-  const contact = await addContact(body)
+  const { _id: userId } = req.user
+  const contact = await addContact(body, userId)
   res.status(HttpCode.CREATED).json({ contact, status: 'created' })
 }
 
 const updateContactController = async (req, res, next) => {
+  const { _id: userId } = req.user
   const { contactId } = req.params
   const body = req.body
-  const contact = await updateContact(contactId, body)
+  const contact = await updateContact(contactId, body, userId)
   if (!contact) return res.status(HttpCode.BAD_REQUEST).json({ status: 'invalid id' })
   res.status(HttpCode.CREATED).json({ contact, status: 'updated' })
 }
 
 const updateStatusContactController = async (req, res, next) => {
+  const { _id: userId } = req.user
   const { contactId } = req.params
   const { favorite } = req.body
-  const contact = await updateStatusContact(contactId, favorite)
+  const contact = await updateStatusContact(contactId, favorite, userId)
   if (!contact) return res.status(HttpCode.BAD_REQUEST).json({ status: 'invalid id' })
   res.status(HttpCode.CREATED).json({ contact, status: 'updated' })
 }
