@@ -1,4 +1,4 @@
-class newError extends Error {
+class newInvalidDataError extends Error {
   constructor(message) {
     super(message)
     this.status = 400
@@ -6,5 +6,5 @@ class newError extends Error {
 }
 
 module.exports = {
-  newError
+  newInvalidDataError
 }
