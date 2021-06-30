@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const { UnauthorizedError } = require('./errors')
 
-const AuthMiddleware = (req, res, next) => {
-  const [tokenType, token] = req.headers.authorization.split(' ')
+const authMiddleware = (req, res, next) => {
+  const [, token] = req.headers.authorization.split(' ')
   if (!token) {
-    //   add NotAU..error
-    next()
+    next(new UnauthorizedError('Not authorized'))
   }
   try {
     const user = jwt.decode(token, process.env.JWT_SECRET)
@@ -13,8 +13,8 @@ const AuthMiddleware = (req, res, next) => {
     req.user = user
     next()
   } catch (err) {
-    next(err)
+    next(new UnauthorizedError('Not authorized'))
   }
 }
 
-module.exports = { AuthMiddleware }
+module.exports = { authMiddleware }
