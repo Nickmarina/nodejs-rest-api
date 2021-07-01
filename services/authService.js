@@ -21,7 +21,7 @@ const registration = async (email, password) => {
 const login = async(email, password) => {
   const user = await User.findOne({ email })
 
-  if (!user || !user.validPassword(password)) {
+  if (!user || !await user.validPassword(password)) {
     throw new UnauthorizedError('Email or password is wrong')
   }
 
@@ -31,9 +31,8 @@ const login = async(email, password) => {
   return { token, subscription: user.subscription }
 }
 
-const logout = async(id) => {
-  const newToken = null
-  await User.findByIdAndUpdate(id, { $set: { token: newToken } }, { new: true })
+const logout = async(_id) => {
+ await User.findByIdAndUpdate(_id, { $set: { token: null } })
 }
 
 const getCurrentUser = async(token) => {
@@ -41,7 +40,7 @@ const getCurrentUser = async(token) => {
   return user
 }
 
-const changeSubscription = async(id, newSubscription)=>{
+const changeSubscription = async(id, newSubscription) => {
   const user = await User.findByIdAndUpdate(id, { $set: { subscription: newSubscription } }, { new: true })
   return user
 }

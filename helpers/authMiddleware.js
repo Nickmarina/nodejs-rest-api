@@ -1,19 +1,25 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const { HttpCode } = require('./codes')
+const { UnauthorizedError } = require('./errors')
+// const { User } = require('../db/userModel')
 
 const authMiddleware = (req, res, next) => {
-  const [, token] = req.headers.authorization.split(' ')
-  if (!token) {
-    next(res.status(HttpCode.UNAUTHORIZED).json({ status: 'Not authorized' }))
-  }
   try {
-    const user = jwt.decode(token, process.env.JWT_SECRET)
-    req.token = token
+    const token = req.headers.authorization.split(' ')
+    if (!token) {
+      next(new UnauthorizedError('Not authorized'))
+    }
+    const user = jwt.decode(token[1], process.env.JWT_SECRET)
+    req.token = token[1]
     req.user = user
+
+    // const id = user._id
+    // const findedUser = User.findOne({id})
+    // console.log(findedUser)
+
     next()
   } catch (err) {
-    next(res.status(HttpCode.UNAUTHORIZED).json({ status: 'Not authorized' }))
+    next(new UnauthorizedError('Not authorized'))
   }
 }
 

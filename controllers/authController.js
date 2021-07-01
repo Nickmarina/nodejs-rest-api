@@ -3,7 +3,6 @@ const { registration, login, logout, getCurrentUser, changeSubscription } = requ
 
 const registrationController = async(req, res, next) => {
   const { email, password } = req.body
-  console.dir(req)
   const { subscription } = await registration(email, password)
   res.status(HttpCode.CREATED).json({ user: { email, subscription }, status: 'registration is successful' })
 }
@@ -17,7 +16,7 @@ const loginController = async(req, res, next) => {
 const logoutController = async(req, res, next) => {
   const { _id } = req.user
   await logout(_id)
-  res.status(HttpCode.NO_CONTENT).json({ status: 'no content' })
+  res.status(HttpCode.NO_CONTENT).json({})
 }
 
 const getCurrentUserController = async (req, res, next) => {
