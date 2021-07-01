@@ -12,6 +12,10 @@ const schemaLogin = Joi.object({
   password: Joi.string().alphanum().min(2).max(50).required(),
 })
 
+const schemaChangeSubscription = Joi.object({
+  subscription: Joi.string().valid('starter', 'pro', 'business').required()
+})
+
 const validate = (shema, body, next) => {
   const { error } = shema.validate(body)
   if (error) {
@@ -30,4 +34,8 @@ module.exports.validateRegistration = (req, res, next) => {
 
 module.exports.validateLogin = (req, res, next) => {
   return validate(schemaLogin, req.body, next)
+}
+
+module.exports.validateChangeSubscription = (req, res, next) => {
+  return validate(schemaChangeSubscription, req.body, next)
 }

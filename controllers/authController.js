@@ -1,8 +1,9 @@
 const { HttpCode } = require('../helpers/codes.js')
-const { registration, login, logout, getCurrentUser } = require('../services/authService')
+const { registration, login, logout, getCurrentUser, changeSubscription } = require('../services/authService')
 
 const registrationController = async(req, res, next) => {
   const { email, password } = req.body
+  console.dir(req)
   const { subscription } = await registration(email, password)
   res.status(HttpCode.CREATED).json({ user: { email, subscription }, status: 'registration is successful' })
 }
@@ -25,9 +26,17 @@ const getCurrentUserController = async (req, res, next) => {
   res.status(HttpCode.OK).json({ status: 'success', user: { email, subscription } })
 }
 
+const changeSubscriptionController = async(req, res, next) => {
+  const { _id } = req.user
+  const { subscription } = req.body
+  await changeSubscription(_id, subscription)
+  res.status(HttpCode.OK).json({ status: `subscription updated to '${subscription}'` })
+}
+
 module.exports = {
   registrationController,
   loginController,
   logoutController,
-  getCurrentUserController
+  getCurrentUserController,
+  changeSubscriptionController
 }

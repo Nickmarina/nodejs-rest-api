@@ -11,8 +11,11 @@ const {
 
 const listContactsController = async (req, res, next) => {
   const { _id: userId } = req.user
-  const contacts = await getContacts(userId)
-  res.status(HttpCode.OK).json({ contacts, status: 'success' })
+  let { skip = 0, limit = 20} = req.query
+  skip = parseInt(skip)
+  limit = parseInt(limit) > 20 ? 20 : parseInt(limit)
+  const contacts = await getContacts(userId, { skip, limit })
+  res.status(HttpCode.OK).json({ contacts, skip, limit, status: 'success' })
 }
 
 const getContactByIdController = async (req, res, next) => {

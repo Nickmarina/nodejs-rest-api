@@ -1,8 +1,12 @@
 const { Contact } = require('../db/contactsModel')
 
-const getContacts = async(userId) => {
+const getContacts = async(userId, { skip, limit }) => {
   console.log(userId)
   const contacts = await Contact.find({ userId })
+    .select({ __v: 0 })
+    .skip(skip)
+    .limit(limit)
+    .sort({ favorite: -1 })
   return contacts
 }
 

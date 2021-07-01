@@ -41,9 +41,15 @@ const getCurrentUser = async(token) => {
   return user
 }
 
+const changeSubscription = async(id, newSubscription)=>{
+  const user = await User.findByIdAndUpdate(id, { $set: { subscription: newSubscription } }, { new: true })
+  return user
+}
+
 module.exports = {
   registration,
   login,
   logout,
-  getCurrentUser
+  getCurrentUser,
+  changeSubscription
 }
