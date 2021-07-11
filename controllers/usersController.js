@@ -1,5 +1,5 @@
 const { HttpCode } = require('../helpers/codes.js')
-const { registration, login, logout, getCurrentUser, changeSubscription } = require('../services/authService')
+const { registration, login, logout, getCurrentUser, changeSubscription, updateAvatars } = require('../services/usersService')
 
 const registrationController = async(req, res, next) => {
   const { email, password } = req.body
@@ -21,7 +21,7 @@ const logoutController = async(req, res, next) => {
 
 const getCurrentUserController = async (req, res, next) => {
   const { _id } = req.user
-  const { email, subscription } = await getCurrentUser(_id )
+  const { email, subscription } = await getCurrentUser(_id)
   res.status(HttpCode.OK).json({ status: 'success', user: { email, subscription } })
 }
 
@@ -32,10 +32,18 @@ const changeSubscriptionController = async(req, res, next) => {
   res.status(HttpCode.OK).json({ status: `subscription updated to '${subscription}'` })
 }
 
+const updateAvatarsController = async(req, res, next) => {
+  const { _id } = req.user
+  const { file } = req
+  await updateAvatars(_id, file)
+  res.status(HttpCode.OK).json({ status: 'success', message: 'You\'ve just changed your avatar photo' })
+}
+
 module.exports = {
   registrationController,
   loginController,
   logoutController,
   getCurrentUserController,
-  changeSubscriptionController
+  changeSubscriptionController,
+  updateAvatarsController
 }
