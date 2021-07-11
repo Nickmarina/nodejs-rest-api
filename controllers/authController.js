@@ -20,8 +20,8 @@ const logoutController = async(req, res, next) => {
 }
 
 const getCurrentUserController = async (req, res, next) => {
-  const token = req.token
-  const { email, subscription } = await getCurrentUser(token)
+  const { _id } = req.user
+  const { email, subscription } = await getCurrentUser(_id )
   res.status(HttpCode.OK).json({ status: 'success', user: { email, subscription } })
 }
 

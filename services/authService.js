@@ -35,8 +35,8 @@ const logout = async(_id) => {
  await User.findByIdAndUpdate(_id, { $set: { token: null } })
 }
 
-const getCurrentUser = async(token) => {
-  const user = await User.findOne({ token })
+const getCurrentUser = async(_id) => {
+  const user = await User.findOne({ _id })
   return user
 }
 

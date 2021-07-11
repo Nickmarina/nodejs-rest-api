@@ -4,6 +4,8 @@ const cors = require('cors')
 
 const contactsRouter = require('./routes/api/contactsRouter')
 const authRouter = require('./routes/api/authRouter')
+// const avatarsRouter = require('./routes/api/avatarsRouter)
+
 const { errorHandler } = require('./helpers/apiHelper')
 
 const app = express()
@@ -16,6 +18,7 @@ app.use(express.json())
 
 app.use('/api/contacts', contactsRouter)
 app.use('/api/users', authRouter)
+// app.use('/api/avatars', avatarsRouter)
 app.use(errorHandler)
 
 module.exports = app
