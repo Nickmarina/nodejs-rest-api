@@ -14,7 +14,23 @@ class UnauthorizedError extends TypeError {
   }
 }
 
+class VerificationError extends Error {
+  constructor(message) {
+    super(message)
+    this.status = HttpCode.NOT_FOUND
+  }
+}
+
+class BadRequestError extends Error {
+  constructor(message) {
+    super(message)
+    this.status = HttpCode.BAD_REQUEST
+  }
+}
+
 module.exports = {
   ConflictError,
-  UnauthorizedError
+  UnauthorizedError,
+  VerificationError,
+  BadRequestError
 }

@@ -1,4 +1,4 @@
-const { ConflictError, UnauthorizedError } = require('./errors')
+const { ConflictError, UnauthorizedError, VerificationError, BadRequestError } = require('./errors')
 const { HttpCode } = require('./codes')
 const asyncWrapper = (controller) => {
   return (req, res, next) => {
@@ -7,7 +7,7 @@ const asyncWrapper = (controller) => {
 }
 
 const errorHandler = (error, req, res, next) => {
-  if (ConflictError || UnauthorizedError) {
+  if (ConflictError || UnauthorizedError || VerificationError || BadRequestError) {
     return res.status(error.status).json({ message: error.message })
   }
   res.status(HttpCode.INTERNAL_SERVER_ERROR).json({ message: error.message })
