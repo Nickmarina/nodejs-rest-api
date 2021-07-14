@@ -16,6 +16,10 @@ const schemaChangeSubscription = Joi.object({
   subscription: Joi.string().valid('starter', 'pro', 'business').required()
 })
 
+const schemaVerification = Joi.object({
+  email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+})
+
 const validate = (shema, body, next) => {
   const { error } = shema.validate(body)
   if (error) {
@@ -38,4 +42,8 @@ module.exports.validateLogin = (req, res, next) => {
 
 module.exports.validateChangeSubscription = (req, res, next) => {
   return validate(schemaChangeSubscription, req.body, next)
+}
+
+module.exports.validateVerification = (req, res, next) => {
+  return validate(schemaVerification, req.body, next)
 }

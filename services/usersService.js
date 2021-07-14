@@ -2,27 +2,30 @@ const jwt = require('jsonwebtoken')
 const jimp = require('jimp')
 const path = require('path')
 const fs = require('fs/promises')
+const sha256 = require('sha256')
 require('dotenv').config()
 const { User } = require('../db/userModel')
+const { sendMail } = require('../helpers/sgMai')
 const { ConflictError, UnauthorizedError } = require('../helpers/errors')
 
 const registration = async (email, password) => {
+  const code = sha256(email + process.env.JWT_SECRET)
   const newUser = new User({
     email,
-    password
+    password,
+    verifyToken: code
   })
-
   const user = await User.findOne({ email })
   if (user) {
     throw new ConflictError(`Email '${email}' is ussed`)
   }
-
   await newUser.save()
+  await sendMail(email, code)
   return newUser
 }
 
 const login = async(email, password) => {
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email, verify: true })
 
   if (!user || !await user.validPassword(password)) {
     throw new UnauthorizedError('Email or password is wrong')
